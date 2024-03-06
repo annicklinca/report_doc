@@ -7,7 +7,8 @@ import Docxtemplater from 'docxtemplater';
 import MyDatePicker from './datepicker';
 import Choosedate from "./datepicker2";
 import {Document, HeadingLevel, TextRun, Packer, Paragraph, Table, Tablecell, TableRow, VerticalAlign } from "docx";
-
+import PrintDoc from "./generatedoc";
+import imag1 from "./RNP_LOGO.png"
 const PrintPage = () => {
     const contentRef = useRef(null);
     const [selectedOption, setSelectedOption] = useState('');
@@ -16,7 +17,7 @@ const PrintPage = () => {
       if (selectedOption === 'pdf') {
         generatePDF();
       } else if (selectedOption === 'word') {
-        generateWord();
+        PrintDoc();
       } else {
         alert('Please select an option.');
       }
@@ -30,7 +31,7 @@ const PrintPage = () => {
         doc.setFontSize(24);
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(0, 0, 255); // Set text color to blue
-        doc.text("MONTHLY REPORT FOR JANUARY 2024", doc.internal.pageSize.getWidth() / 2, 20, { align: 'center' });
+        doc.text("REPORT ", doc.internal.pageSize.getWidth() / 2, 20, { align: 'center' });
 
         // Table
         const tables = contentRef.current.querySelectorAll('.overflow-x-auto table'); // Select all tables within the overflow-x-auto class
@@ -76,36 +77,36 @@ const PrintPage = () => {
         doc.save('page.pdf');
     };
 
-    async function generateWord() {
-      const doc = new Document({
-          sections: [{
-              properties: {},
-              children: [
-                  new Paragraph({
-                      children: [
-                          new TextRun("Hello World")
-                      ],
-                   }),
-              ],
-           }]
-      });
-      const buffer = await Packer.toBuffer(doc);
-      const blob = new Blob([buffer], {type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"});
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = 'my.docx';
-      link.click();
-  }
+  //   async function generateWord() {
+  //     const doc = new Document({
+  //         sections: [{
+  //             properties: {},
+  //             children: [
+  //                 new Paragraph({
+  //                     children: [
+  //                         new TextRun("Hello World")
+  //                     ],
+  //                  }),
+  //             ],
+  //          }]
+  //     });
+  //     const buffer = await Packer.toBuffer(doc);
+  //     const blob = new Blob([buffer], {type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"});
+  //     const link = document.createElement('a');
+  //     link.href = window.URL.createObjectURL(blob);
+  //     link.download = 'my.docx';
+  //     link.click();
+  // }
     
 
     return(            
      <>
-         <header className="bg-white">
+         <header className="bg-blue-800">
         <nav className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
           <div className="flex lg:flex-1">
             <a href="/" className="-m-1.5 p-1.5">
         
-              <h1 className="text-black font-bold text-2xl">NRP</h1>
+             <img src={imag1} className="w-14 h-14"/>
              </a>
           </div>
           <div className="flex lg:hidden">
@@ -145,11 +146,11 @@ const PrintPage = () => {
                         <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
                       </svg>
                     </button>
-                   
+                    <div className="hidden lg:flex lg:gap-x-12">
+                <MyDatePicker />
+               <Choosedate />
+               </div>
                   </div>
-                  <a href="#crimes" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Crimes</a>
-                  <a href="#" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Incidents</a>
-                  <a href="#" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Accidents</a>
                 </div>
               </div>
             </div>
@@ -160,9 +161,7 @@ const PrintPage = () => {
       <div ref={contentRef}>
       <div className="mx-12">
 
-<h1 className="text-bold text-center my-8"><b>MONTHLY REPORT FOR JANUARY 2024</b></h1>
-<p>	The security situation for the month of December 2023 was reported generally calm countrywide. However, a total number of 2,861 cases of crime, 422 incidents and 1006 road traffic accidents which caused 75 deaths and 537 injured people were recorded. RNP together with joint forces conducted 683 operations, and seized different exhibits including cannabis (197 kg and 24,216 pellets of cannabis), 2,437 liters of Kanyanga, 25,825liters of illicit brews, second hand clothes (312 bales, 1308 kg and 1,496 pcs); 5,218 pairs of Second hand shoes; 773,440 Pcs of plastic bags and 9217 bottles of assorted drinks.
-</p>
+<h1 className="text-bold text-center my-8"><b> REPORT</b></h1>
 <div className='pt-8'>
   <div className="flex items-center justify-center min-h-[450px]">
     <div className="overflow-x-auto relative shadow-md sm:rounded-lg">
@@ -392,7 +391,7 @@ const PrintPage = () => {
         <option value="pdf">PDF</option>
         <option value="word">Word</option>
       </select>
-      <button onClick={handleDownload} className="bg-green-500 hover:bg-blue-500 text-white txt-semibold my-3 mx-8 p-2 rounded-sm">Download</button>
+      <button onClick={handleDownload} className="bg-blue-800 hover:bg-blue-500 text-white font-semibold my-3 mx-8 p-2 rounded-md">Download</button>
     </>
     )
 }

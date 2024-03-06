@@ -11,10 +11,11 @@ const Choosedate = () => {
 
   return (
     <div>
-      <h2 className='font-semibold'>Choose second Date</h2>
+      <h2 className='font-semibold text-white p-2'>Choose second Date</h2>
       <DatePicker
         selected={selectedDate}
         onChange={handleDateChange}
+        className='p-1 rounded-full border-blue-900'
         dateFormat="MM/dd/yyyy"
         isClearable
         placeholderText="Select a date"
