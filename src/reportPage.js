@@ -25,57 +25,77 @@ const PrintPage = () => {
 
     // Inside generatePDF function
     const generatePDF = () => {
-        const doc = new jsPDF();
-
-        // Title
-        doc.setFontSize(24);
-        doc.setFont('helvetica', 'bold');
-        doc.setTextColor(0, 0, 255); // Set text color to blue
-        doc.text("REPORT ", doc.internal.pageSize.getWidth() / 2, 20, { align: 'center' });
-
-        // Table
-        const tables = contentRef.current.querySelectorAll('.overflow-x-auto table'); // Select all tables within the overflow-x-auto class
-        let startY = 40; // Adjust the startY position as needed
-        tables.forEach((table, index) => {
-            const tableData = [];
-            const tableRows = table.querySelectorAll('tr');
-            tableRows.forEach((row) => {
-                const rowData = [];
-                row.querySelectorAll('th, td').forEach((cell) => {
-                    rowData.push(cell.textContent.trim());
-                });
-                tableData.push(rowData);
-            });
-            if (tableData.length > 0) {
-                if (index > 0) {
-                    // Add a page break for subsequent tables
-                    doc.addPage();
-                    startY = 20; // Adjust startY for subsequent tables
-                }
-                doc.autoTable({
-                    startY,
-                    head: [['S/N', 'Crimes', 'Central', 'East', 'North', 'West', 'South', 'Total']],
-                    body: tableData.slice(1), // Skip the header row
-                    theme: 'grid', // Apply grid theme to the table
-                    styles: {
-                        textColor: [0, 0, 255], // Set text color to blue
-                        halign: 'center', // Center align table headers
-                        valign: 'middle', // Middle align table content
-                    },
-                    headerStyles: {
-                        fillColor: [0, 0, 255], // Set header background color to blue
-                        textColor: [255, 255, 255], // Set text color of header to white
-                    },
-                    alternateRowStyles: {
-                        fillColor: [230, 230, 230], // Set alternate row background color
-                    },
-                });
-            }
-        });
-
-        // Save the PDF
-        doc.save('page.pdf');
-    };
+      const doc = new jsPDF();
+  
+      // Title
+      doc.setFontSize(24);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(0, 0, 255); // Set text color to blue
+      doc.text("REPORT ", doc.internal.pageSize.getWidth() / 2, 20, { align: 'center' });
+  
+      // Iterate over each table
+      const tables = contentRef.current.querySelectorAll('.overflow-x-auto table');
+      let startY = 40;
+  
+      tables.forEach((table, index) => {
+          const tableTitleElement = table.previousElementSibling;
+          if (tableTitleElement && tableTitleElement.tagName === 'H2') {
+              const tableTitle = tableTitleElement.textContent; // Get the title of the table
+              // Add title
+              doc.setFontSize(16);
+              doc.setTextColor(0, 0, 0); // Set text color to black
+              doc.text(tableTitle, 10, startY + 10);
+          }
+  
+          // Get table data
+          const tableData = [];
+          const tableRows = table.querySelectorAll('tr');
+          tableRows.forEach((row) => {
+              const rowData = [];
+              row.querySelectorAll('th, td').forEach((cell) => {
+                  rowData.push(cell.textContent.trim());
+              });
+              tableData.push(rowData);
+          });
+  
+          // Check if there's enough space for the table
+          const pageHeight = doc.internal.pageSize.getHeight();
+          const remainingHeight = pageHeight - startY;
+          const tableHeight = tableData.length * 10; // Approximate height of each row
+          if (tableHeight > remainingHeight) {
+              doc.addPage();
+              startY = 20;
+          }
+  
+          // Add table
+          doc.autoTable({
+              startY: startY + 20,
+              head: [['S/N', 'Crimes', 'Central', 'East', 'North', 'West', 'South', 'Total']],
+              body: tableData.slice(1),
+              theme: 'grid',
+              styles: {
+                  textColor: [0, 0, 0], // Set text color to black
+                  halign: 'center',
+                  valign: 'middle',
+              },
+              headerStyles: {
+                  fillColor: [0, 0, 255],
+                  textColor: [255, 255, 255],
+              },
+              alternateRowStyles: {
+                  fillColor: [230, 230, 230],
+              },
+          });
+  
+          // Update startY for the next table
+          startY = doc.autoTableEndPosY() + 10;
+      });
+  
+      // Save the PDF
+      doc.save('page.pdf');
+  };
+  
+  
 
   //   async function generateWord() {
   //     const doc = new Document({
@@ -124,10 +144,10 @@ const PrintPage = () => {
         </nav>
         <div className="lg:hidden" role="dialog" aria-modal="true">
           <div className="fixed inset-0 z-10"></div>
-          <div className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+          <div className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
             <div className="flex items-center justify-between">
               <a href="#" className="-m-1.5 p-1.5">
-              <h1 className="text-black font-bold text-2xl">NRP</h1>
+              <img src={imag1} className="w-14 h-14"/>
                 </a>
               <button type="button" className="-m-2.5 rounded-md p-2.5 text-gray-700">
                 <span className="sr-only">Close menu</span>
