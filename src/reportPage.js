@@ -6,9 +6,12 @@ import { jsPDF } from 'jspdf';
 import Docxtemplater from 'docxtemplater';
 import MyDatePicker from './datepicker';
 import Choosedate from "./datepicker2";
-import {Document, HeadingLevel, TextRun, Packer, Paragraph, Table, Tablecell, TableRow, VerticalAlign } from "docx";
-import PrintDoc from "./generatedoc";
+// import {Document, HeadingLevel, TextRun, Packer, Paragraph, Table, Tablecell, TableRow, VerticalAlign } from "docx";
+import 'jspdf-autotable';
+import { Document, Packer, Paragraph, Table, TableRow, TableCell, WidthType, AlignmentType } from "docx";
 import imag1 from "./RNP_LOGO.png"
+import PrintDoc from "./generatedoc";
+
 const PrintPage = () => {
     const contentRef = useRef(null);
     const [selectedOption, setSelectedOption] = useState('');
@@ -95,7 +98,7 @@ const PrintPage = () => {
       doc.save('page.pdf');
   };
   
-  
+
 
   //   async function generateWord() {
   //     const doc = new Document({
