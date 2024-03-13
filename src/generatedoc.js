@@ -267,7 +267,7 @@ const PrintDoc = () => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'my_doc.docx';
+        a.download = 'report.docx';
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);
