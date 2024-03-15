@@ -1,3 +1,6 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 .App {
   text-align: center;
 }
@@ -26,6 +29,12 @@
 
 .App-link {
   color: #61dafb;
+}
+
+.app-container{
+  width: 70%;
+  margin: 0px auto;
+  padding: 5rem 0px
 }
 
 @keyframes App-logo-spin {
