@@ -33,14 +33,12 @@ const createTable = (title, data, headers) => {
         children: [
           new TableCell({ children: [new Paragraph(String(rowNum))] }),
           new TableCell({ children: [new Paragraph(row)] }),
-          ...headers
-            .slice(2)
-            .map(
-              (header) =>
-                new TableCell({
-                  children: [new Paragraph(String(rowData[header] || 0))],
-                })
-            ),
+          ...headers.slice(2).map(
+            (header) =>
+              new TableCell({
+                children: [new Paragraph(String(rowData[header] || 0))],
+              })
+          ),
           new TableCell({ children: [new Paragraph(String(total))] }),
         ],
       });

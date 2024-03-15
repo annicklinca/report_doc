@@ -20,7 +20,7 @@ function AppHeader() {
           <img src={imag1} alt="/" className="w-12 h-12" />
         </div>
         <div className="flex lg:gap-x-12">
-          <DatePicker
+          {/* <DatePicker
             selected={selectedDate}
             className="p-1 rounded-half border-blue-900"
             onChange={handleDateChange}
@@ -35,7 +35,7 @@ function AppHeader() {
             dateFormat="MM/dd/yyyy"
             isClearable
             placeholderText="Select a date"
-          />
+          /> */}
         </div>
       </nav>
     </header>

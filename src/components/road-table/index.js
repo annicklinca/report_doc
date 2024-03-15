@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-function IncidentTable() {
+function RoadTable() {
   const [tableData, setTableData] = useState({});
 
   const returnProvinceData = async (url) => {
@@ -13,7 +13,7 @@ function IncidentTable() {
     }
   };
 
-  const urlData = `https://gis.police.gov.rw/server/rest/services/Incidents_Data/FeatureServer/4/query?where=1%3D1&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&defaultSR=&spatialRel=esriSpatialRelIntersects&distance=&units=esriSRUnit_Foot&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&gdbVersion=&historicMoment=&returnDistinctValues=false&returnIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&orderByFields=&groupByFieldsForStatistics=province%2C+incident_type_l3&outStatistics=%5B%7B%0D%0A++%22statisticType%22%3A+%22Count%22%2C%0D%0A++%22onStatisticField%22%3A+%22incident_type_l3%22%2C%0D%0A++%22outStatisticFieldName%22%3A+%22total%22%0D%0A%7D%5D&returnZ=false&returnM=false&multipatchOption=xyFootprint&resultOffset=&resultRecordCount=&returnTrueCurves=false&returnExceededLimitFeatures=false&quantizationParameters=&returnCentroid=false&timeReferenceUnknownClient=false&maxRecordCountFactor=&sqlFormat=none&resultType=&featureEncoding=esriDefault&datumTransformation=&f=json&token=DMIJMTS5yGqTbjiaXky-5k2Bby9bNOEO85JSUkbLMp2qO0c5MbHaTl_Z2zxiwHY3beQqQ44IWcFqd0Nq1tEbctQDlsHVrTMWrzoKpOUSBqOKhk4IFywwxe_aIt9KHO1aEUMGI4PBv4KIH_52XyhLtYlJPyv5UBQpa__eSbp4TLE.`;
+  const urlData = `https://gis.police.gov.rw/server/rest/services/Road_Accidents_Data/FeatureServer/0/query?where=1%3D1&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&defaultSR=&spatialRel=esriSpatialRelIntersects&distance=&units=esriSRUnit_Foot&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&gdbVersion=&historicMoment=&returnDistinctValues=false&returnIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&orderByFields=&groupByFieldsForStatistics=province%2C+probable_cause&outStatistics=%5B%7B%0D%0A++%22statisticType%22%3A+%22Count%22%2C%0D%0A++%22onStatisticField%22%3A+%22probable_cause%22%2C%0D%0A++%22outStatisticFieldName%22%3A+%22total%22%0D%0A%7D%5D&returnZ=false&returnM=false&multipatchOption=xyFootprint&resultOffset=&resultRecordCount=&returnTrueCurves=false&returnExceededLimitFeatures=false&quantizationParameters=&returnCentroid=false&timeReferenceUnknownClient=false&maxRecordCountFactor=&sqlFormat=none&resultType=&featureEncoding=esriDefault&datumTransformation=&f=json&token=DMIJMTS5yGqTbjiaXky-5k2Bby9bNOEO85JSUkbLMp2qO0c5MbHaTl_Z2zxiwHY3beQqQ44IWcFqd0Nq1tEbctQDlsHVrTMWrzoKpOUSBqOKhk4IFywwxe_aIt9KHO1aEUMGI4PBv4KIH_52XyhLtYlJPyv5UBQpa__eSbp4TLE.`;
   //
   const getData = async () => {
     const resultTable = {};
@@ -22,11 +22,11 @@ function IncidentTable() {
       const eastData = await returnProvinceData(urlData);
       for (let i = 0; i < eastData.length; i++) {
         const data = eastData[i];
-        if (resultTable[data.attributes.incident_type_l3]) {
-          resultTable[data.attributes.incident_type_l3].east =
+        if (resultTable[data.attributes.probable_cause]) {
+          resultTable[data.attributes.probable_cause].east =
             data.attributes.total;
         } else {
-          resultTable[data.attributes.incident_type_l3] = {
+          resultTable[data.attributes.probable_cause] = {
             east: data.attributes.total,
           };
         }
@@ -35,11 +35,11 @@ function IncidentTable() {
       const westData = await returnProvinceData(urlData);
       for (let i = 0; i < westData.length; i++) {
         const data = westData[i];
-        if (resultTable[data.attributes.incident_type_l3]) {
-          resultTable[data.attributes.incident_type_l3].west =
+        if (resultTable[data.attributes.probable_cause]) {
+          resultTable[data.attributes.probable_cause].west =
             data.attributes.total;
         } else {
-          resultTable[data.attributes.incident_type_l3] = {
+          resultTable[data.attributes.probable_cause] = {
             west: data.attributes.total,
           };
         }
@@ -48,11 +48,11 @@ function IncidentTable() {
       const northData = await returnProvinceData(urlData);
       for (let i = 0; i < northData.length; i++) {
         const data = northData[i];
-        if (resultTable[data.attributes.incident_type_l3]) {
-          resultTable[data.attributes.incident_type_l3].north =
+        if (resultTable[data.attributes.probable_cause]) {
+          resultTable[data.attributes.probable_cause].north =
             data.attributes.total;
         } else {
-          resultTable[data.attributes.incident_type_l3] = {
+          resultTable[data.attributes.probable_cause] = {
             north: data.attributes.total,
           };
         }
@@ -61,11 +61,11 @@ function IncidentTable() {
       const southData = await returnProvinceData(urlData);
       for (let i = 0; i < southData.length; i++) {
         const data = southData[i];
-        if (resultTable[data.attributes.incident_type_l3]) {
-          resultTable[data.attributes.incident_type_l3].south =
+        if (resultTable[data.attributes.probable_cause]) {
+          resultTable[data.attributes.probable_cause].south =
             data.attributes.total;
         } else {
-          resultTable[data.attributes.incident_type_l3] = {
+          resultTable[data.attributes.probable_cause] = {
             south: data.attributes.total,
           };
         }
@@ -74,11 +74,11 @@ function IncidentTable() {
       const kigaliData = await returnProvinceData(urlData);
       for (let i = 0; i < kigaliData.length; i++) {
         const data = kigaliData[i];
-        if (resultTable[data.attributes.incident_type_l3]) {
-          resultTable[data.attributes.incident_type_l3].kigali =
+        if (resultTable[data.attributes.probable_cause]) {
+          resultTable[data.attributes.probable_cause].kigali =
             data.attributes.total;
         } else {
-          resultTable[data.attributes.incident_type_l3] = {
+          resultTable[data.attributes.probable_cause] = {
             kigali: data.attributes.total,
           };
         }
@@ -106,7 +106,7 @@ function IncidentTable() {
       <div className="overflow-x-auto relative shadow-md sm:rounded-lg">
         <div className="overflow-x-auto relative shadow-md sm:rounded-lg">
           <h2 className="py-3">
-            <b>1. Prevalent Crimes</b>
+            <b>1. Prevalent Road</b>
           </h2>
           <div className="w-full overflow-x-auto">
             <table className="w-full table1">
@@ -216,4 +216,4 @@ function IncidentTable() {
   );
 }
 
-export default IncidentTable;
+export default RoadTable;
