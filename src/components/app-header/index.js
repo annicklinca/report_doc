@@ -1,15 +1,15 @@
-import React, { useState } from "react";
-import DatePicker from "react-datepicker";
+// import { useState } from "react";
+// import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "jspdf-autotable";
 import imag1 from "../../RNP_LOGO.png";
 
 function AppHeader() {
-  const [selectedDate, setSelectedDate] = useState(null);
+  // const [selectedDate, setSelectedDate] = useState(null);
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
+  // const handleDateChange = (date) => {
+  //   setSelectedDate(date);
+  // };
   return (
     <header className="bg-gray-300">
       <nav

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-function IncidentTable() {
+function IncidentsTable() {
   const [tableData, setTableData] = useState({});
 
   const returnProvinceData = async (url) => {
@@ -19,67 +19,16 @@ function IncidentTable() {
     const resultTable = {};
     try {
       //east data
-      const eastData = await returnProvinceData(urlData);
-      for (let i = 0; i < eastData.length; i++) {
-        const data = eastData[i];
+      const allData = await returnProvinceData(urlData);
+      for (let i = 0; i < allData.length; i++) {
+        const data = allData[i];
         if (resultTable[data.attributes.incident_type_l3]) {
-          resultTable[data.attributes.incident_type_l3].east =
-            data.attributes.total;
+          resultTable[data.attributes.incident_type_l3][
+            data.attributes.province.toLowerCase()
+          ] = data.attributes.total;
         } else {
           resultTable[data.attributes.incident_type_l3] = {
-            east: data.attributes.total,
-          };
-        }
-      }
-      //west data
-      const westData = await returnProvinceData(urlData);
-      for (let i = 0; i < westData.length; i++) {
-        const data = westData[i];
-        if (resultTable[data.attributes.incident_type_l3]) {
-          resultTable[data.attributes.incident_type_l3].west =
-            data.attributes.total;
-        } else {
-          resultTable[data.attributes.incident_type_l3] = {
-            west: data.attributes.total,
-          };
-        }
-      }
-      //north data
-      const northData = await returnProvinceData(urlData);
-      for (let i = 0; i < northData.length; i++) {
-        const data = northData[i];
-        if (resultTable[data.attributes.incident_type_l3]) {
-          resultTable[data.attributes.incident_type_l3].north =
-            data.attributes.total;
-        } else {
-          resultTable[data.attributes.incident_type_l3] = {
-            north: data.attributes.total,
-          };
-        }
-      }
-      //south data
-      const southData = await returnProvinceData(urlData);
-      for (let i = 0; i < southData.length; i++) {
-        const data = southData[i];
-        if (resultTable[data.attributes.incident_type_l3]) {
-          resultTable[data.attributes.incident_type_l3].south =
-            data.attributes.total;
-        } else {
-          resultTable[data.attributes.incident_type_l3] = {
-            south: data.attributes.total,
-          };
-        }
-      }
-      //central data
-      const kigaliData = await returnProvinceData(urlData);
-      for (let i = 0; i < kigaliData.length; i++) {
-        const data = kigaliData[i];
-        if (resultTable[data.attributes.incident_type_l3]) {
-          resultTable[data.attributes.incident_type_l3].kigali =
-            data.attributes.total;
-        } else {
-          resultTable[data.attributes.incident_type_l3] = {
-            kigali: data.attributes.total,
+            [data.attributes.province.toLowerCase()]: data.attributes.total,
           };
         }
       }
@@ -216,4 +165,4 @@ function IncidentTable() {
   );
 }
 
-export default IncidentTable;
+export default IncidentsTable;
