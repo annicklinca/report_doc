@@ -1,15 +1,64 @@
-import React from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
-function IncidentTable() {
+function IncidentsTable() {
+  const [tableData, setTableData] = useState({});
+
+  const returnProvinceData = async (url) => {
+    try {
+      const response = await axios.request(url);
+      return response.data.features;
+    } catch (error) {
+      return [];
+    }
+  };
+
+  const urlData = `https://gis.police.gov.rw/server/rest/services/Incidents_Data/FeatureServer/4/query?where=1%3D1&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&defaultSR=&spatialRel=esriSpatialRelIntersects&distance=&units=esriSRUnit_Foot&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&gdbVersion=&historicMoment=&returnDistinctValues=false&returnIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&orderByFields=&groupByFieldsForStatistics=province%2C+incident_type_l3&outStatistics=%5B%7B%0D%0A++%22statisticType%22%3A+%22Count%22%2C%0D%0A++%22onStatisticField%22%3A+%22incident_type_l3%22%2C%0D%0A++%22outStatisticFieldName%22%3A+%22total%22%0D%0A%7D%5D&returnZ=false&returnM=false&multipatchOption=xyFootprint&resultOffset=&resultRecordCount=&returnTrueCurves=false&returnExceededLimitFeatures=false&quantizationParameters=&returnCentroid=false&timeReferenceUnknownClient=false&maxRecordCountFactor=&sqlFormat=none&resultType=&featureEncoding=esriDefault&datumTransformation=&f=json&token=DMIJMTS5yGqTbjiaXky-5k2Bby9bNOEO85JSUkbLMp2qO0c5MbHaTl_Z2zxiwHY3beQqQ44IWcFqd0Nq1tEbctQDlsHVrTMWrzoKpOUSBqOKhk4IFywwxe_aIt9KHO1aEUMGI4PBv4KIH_52XyhLtYlJPyv5UBQpa__eSbp4TLE.`;
+  //
+  const getData = async () => {
+    const resultTable = {};
+    try {
+      //east data
+      const allData = await returnProvinceData(urlData);
+      for (let i = 0; i < allData.length; i++) {
+        const data = allData[i];
+        if (resultTable[data.attributes.incident_type_l3]) {
+          resultTable[data.attributes.incident_type_l3][
+            data.attributes.province.toLowerCase()
+          ] = data.attributes.total;
+        } else {
+          resultTable[data.attributes.incident_type_l3] = {
+            [data.attributes.province.toLowerCase()]: data.attributes.total,
+          };
+        }
+      }
+      //
+      setTableData(resultTable);
+    } catch (error) {
+      console.log({ error });
+    }
+  };
+
+  const returnSummation = (values) => {
+    return values.reduce(
+      (accumulator, currentValue) => accumulator + currentValue,
+      0
+    );
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
   return (
     <div className="pt-12">
       <div className="overflow-x-auto relative shadow-md sm:rounded-lg">
         <div className="overflow-x-auto relative shadow-md sm:rounded-lg">
           <h2 className="py-3">
-            <b>2. Prevalent Incidents</b>
+            <b>1. Prevalent Crimes</b>
           </h2>
           <div className="w-full overflow-x-auto">
-            <table className="w-full table2">
+            <table className="w-full table1">
               <thead>
                 <tr className="text-sm font-semibold tracking-wide text-left text-gray-900 bg-gray-100 uppercase border-b border-gray-600">
                   <th className="px-4 py-3">S/N</th>
@@ -17,722 +66,98 @@ function IncidentTable() {
                   <th className="px-4 py-3">Central</th>
                   <th className="px-4 py-3">East</th>
                   <th className="px-4 py-3">North</th>
-                  <th className="px-4 py-3">West</th>
                   <th className="px-4 py-3">South</th>
+                  <th className="px-4 py-3">West</th>
                   <th className="px-4 py-3">Total</th>
                 </tr>
               </thead>
               <tbody className="bg-white">
-                <tr className="text-gray-700">
-                  <td className="px-4 py-3 text-xs font-semibold border">1</td>
-                  <td className="px-4 py-3 text-xs font-semibold border">
-                    Road accidents
+                {Object.keys(tableData).map((crime, index) => (
+                  <tr className="text-gray-700" key={index}>
+                    <td className="px-4 py-3 text-xs font-semibold border">
+                      {index + 1}
+                    </td>
+                    <td className="px-4 py-3 text-xs font-semibold border">
+                      {crime}
+                    </td>
+                    <td className="px-4 py-3 text-xs font-semibold border">
+                      {tableData[crime]?.kigali}
+                    </td>
+                    <td className="px-4 py-3 text-xs border">
+                      {tableData[crime]?.east}
+                    </td>
+                    <td className="px-4 py-3 text-xs font-semibold border">
+                      {tableData[crime]?.north}
+                    </td>
+                    <td className="px-4 py-3 text-xs font-semibold border">
+                      {tableData[crime]?.south}
+                    </td>
+                    <td className="px-4 py-3 text-xs border">
+                      {tableData[crime]?.west}
+                    </td>
+                    <td className="px-4 py-3 text-xs border">
+                      {Number(tableData[crime].kigali || 0) +
+                        Number(tableData[crime]?.east || 0) +
+                        Number(tableData[crime]?.north || 0) +
+                        Number(tableData[crime]?.south || 0) +
+                        Number(tableData[crime]?.west || 0)}
+                    </td>
+                  </tr>
+                ))}
+                <tr className="text-sm font-bold tracking-wide text-left text-gray-900 bg-gray-100 uppercase border-b border-gray-600">
+                  <td className="px-4 py-3 text-sm border" colSpan={2}>
+                    Total
                   </td>
-                  <td className="px-4 py-3 text-xs font-semibold border"> </td>
-                  <td className="px-4 py-3 text-xs border"></td>
-                  <td className="px-4 py-3 text-xs font-semibold border"></td>
-                  <td className="px-4 py-3 text-xs font-semibold border"> </td>
-                  <td className="px-4 py-3 text-xs border"></td>
-                  <td className="px-4 py-3 text-xs border"></td>
-                </tr>
-                <tr className="text-gray-700">
-                  <td className="px-4 py-3 text-xs font-semibold border">2</td>
-                  <td className="px-4 py-3 text-xs font-semibold border">
-                    Road accidents{" "}
+                  <td className="px-4 py-3 border">
+                    {returnSummation(
+                      Object.keys(tableData).map(
+                        (element) => Number(tableData[element].kigali) || 0
+                      )
+                    )}
                   </td>
-                  <td className="px-4 py-3 text-xs font-semibold border"> </td>
-                  <td className="px-4 py-3 text-xs border"></td>
-                  <td className="px-4 py-3 text-xs font-semibold border"></td>
-                  <td className="px-4 py-3 text-xs font-semibold border"> </td>
-                  <td className="px-4 py-3 text-xs border"></td>
-                  <td className="px-4 py-3 text-xs border"></td>
-                </tr>
-                <tr className="text-gray-700">
-                  <td className="px-4 py-3 text-xs font-semibold border">3</td>
-                  <td className="px-4 py-3 text-xs font-semibold border">
-                    Sudden death & Fatal accidents{" "}
+                  <td className="px-4 py-3 border">
+                    {returnSummation(
+                      Object.keys(tableData).map(
+                        (element) => Number(tableData[element].east) || 0
+                      )
+                    )}
                   </td>
-                  <td className="px-4 py-3 text-xs font-semibold border"> </td>
-                  <td className="px-4 py-3 text-xs border"></td>
-                  <td className="px-4 py-3 text-xs font-semibold border"></td>
-                  <td className="px-4 py-3 text-xs font-semibold border"> </td>
-                  <td className="px-4 py-3 text-xs border"></td>
-                  <td className="px-4 py-3 text-xs border"></td>
-                </tr>
-                <tr className="text-gray-700">
-                  <td className="px-4 py-3 text-xs font-semibold border">4</td>
-                  <td className="px-4 py-3 text-xs font-semibold border">
-                    Fire incidents{" "}
+                  <td className="px-4 py-3 border">
+                    {returnSummation(
+                      Object.keys(tableData).map(
+                        (element) => Number(tableData[element].north) || 0
+                      )
+                    )}
                   </td>
-                  <td className="px-4 py-3 text-xs font-semibold border"> </td>
-                  <td className="px-4 py-3 text-xs border"></td>
-                  <td className="px-4 py-3 text-xs font-semibold border"></td>
-                  <td className="px-4 py-3 text-xs font-semibold border"> </td>
-                  <td className="px-4 py-3 text-xs border"></td>
-                  <td className="px-4 py-3 text-xs border"></td>
-                </tr>
-                <tr className="text-gray-700">
-                  <td className="px-4 py-3 text-xs font-semibold border">5</td>
-                  <td className="px-4 py-3 text-xs font-semibold border">
-                    Dead body recovered{" "}
+                  <td className="px-4 py-3 border">
+                    {returnSummation(
+                      Object.keys(tableData).map(
+                        (element) => Number(tableData[element].south) || 0
+                      )
+                    )}
                   </td>
-                  <td className="px-4 py-3 text-xs font-semibold border"> </td>
-                  <td className="px-4 py-3 text-xs border"></td>
-                  <td className="px-4 py-3 text-xs font-semibold border"></td>
-                  <td className="px-4 py-3 text-xs font-semibold border"> </td>
-                  <td className="px-4 py-3 text-xs border"></td>
-                  <td className="px-4 py-3 text-xs border"></td>
-                </tr>
-                <tr className="text-gray-700">
-                  <td className="px-4 py-3 text-xs font-semibold border">6</td>
-                  <td className="px-4 py-3 text-xs font-semibold border">
-                    Drowning{" "}
+                  <td className="px-4 py-3 border">
+                    {returnSummation(
+                      Object.keys(tableData).map(
+                        (element) => Number(tableData[element].west) || 0
+                      )
+                    )}
                   </td>
-                  <td className="px-4 py-3 text-xs font-semibold border"> </td>
-                  <td className="px-4 py-3 text-xs border"></td>
-                  <td className="px-4 py-3 text-xs font-semibold border"></td>
-                  <td className="px-4 py-3 text-xs font-semibold border"> </td>
-                  <td className="px-4 py-3 text-xs border"></td>
-                  <td className="px-4 py-3 text-xs border"></td>
-                </tr>
-                <tr className="text-gray-700">
-                  <td className="px-4 py-3 text-xs font-semibold border">7</td>
-                  <td className="px-4 py-3 text-xs font-semibold border">
-                    Suspected suicide
+                  <td className="px-4 py-3 border">
+                    {returnSummation(
+                      Object.keys(tableData).map(
+                        (crime) =>
+                          Number(tableData[crime].kigali || 0) +
+                          Number(tableData[crime]?.east || 0) +
+                          Number(tableData[crime]?.north || 0) +
+                          Number(tableData[crime]?.south || 0) +
+                          Number(tableData[crime]?.west || 0)
+                      )
+                    )}
                   </td>
-                  <td className="px-4 py-3 text-xs font-semibold border"> </td>
-                  <td className="px-4 py-3 text-xs border"></td>
-                  <td className="px-4 py-3 text-xs font-semibold border"></td>
-                  <td className="px-4 py-3 text-xs font-semibold border"> </td>
-                  <td className="px-4 py-3 text-xs border"></td>
-                  <td className="px-4 py-3 text-xs border"></td>
-                </tr>
-                <tr className="text-gray-700">
-                  <td className="px-4 py-3 text-xs font-semibold border">8</td>
-                  <td className="px-4 py-3 text-xs font-semibold border">
-                    UXO{" "}
-                  </td>
-                  <td className="px-4 py-3 text-xs font-semibold border"> </td>
-                  <td className="px-4 py-3 text-xs border"></td>
-                  <td className="px-4 py-3 text-xs font-semibold border"></td>
-                  <td className="px-4 py-3 text-xs font-semibold border"> </td>
-                  <td className="px-4 py-3 text-xs border"></td>
-                  <td className="px-4 py-3 text-xs border"></td>
-                </tr>
-                <tr className="text-gray-700">
-                  <td className="px-4 py-3 text-xs font-semibold border">9</td>
-                  <td className="px-4 py-3 text-xs font-semibold border">
-                    Mine collapse{" "}
-                  </td>
-                  <td className="px-4 py-3 text-xs font-semibold border"> </td>
-                  <td className="px-4 py-3 text-xs border"></td>
-                  <td className="px-4 py-3 text-xs font-semibold border"></td>
-                  <td className="px-4 py-3 text-xs font-semibold border"> </td>
-                  <td className="px-4 py-3 text-xs border"></td>
-                  <td className="px-4 py-3 text-xs border"></td>
-                </tr>
-                <tr className="text-gray-700">
-                  <td className="px-4 py-3 text-xs font-semibold border">10</td>
-                  <td className="px-4 py-3 text-xs font-semibold border">
-                    Lightning strike{" "}
-                  </td>
-                  <td className="px-4 py-3 text-xs font-semibold border"> </td>
-                  <td className="px-4 py-3 text-xs border"></td>
-                  <td className="px-4 py-3 text-xs font-semibold border"></td>
-                  <td className="px-4 py-3 text-xs font-semibold border"> </td>
-                  <td className="px-4 py-3 text-xs border"></td>
-                  <td className="px-4 py-3 text-xs border"></td>
                 </tr>
               </tbody>
             </table>
-          </div>
-        </div>
-      </div>
-
-      <div className="pt-8">
-        <div className="overflow-x-auto relative shadow-md sm:rounded-lg">
-          <div className="overflow-x-auto relative shadow-md sm:rounded-lg">
-            <h2 className="py-3">
-              <b> 3. Number of deaths/injuries caused by traffic accidents </b>
-            </h2>
-            <div className="w-full overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="text-sm font-semibold tracking-wide text-left text-gray-900 bg-gray-100 uppercase border-b border-gray-600">
-                    <th className="px-4 py-3">Severity</th>
-                    <th className="px-4 py-3">Central</th>
-                    <th className="px-4 py-3">East</th>
-                    <th className="px-4 py-3">North</th>
-                    <th className="px-4 py-3">West</th>
-                    <th className="px-4 py-3">South</th>
-                    <th className="px-4 py-3">Total</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white">
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      Deaths
-                    </td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      {" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      {" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                  </tr>
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      Serious injuries{" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      {" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      {" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                  </tr>
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      Minor injuries
-                    </td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      {" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      {" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="pt-8">
-        <div className="overflow-x-auto relative shadow-md sm:rounded-lg">
-          <div className="overflow-x-auto relative shadow-md sm:rounded-lg">
-            <h2 className="py-3">
-              <b> 4. Target operations Categories of arrested suspects </b>
-            </h2>
-            <div className="w-full overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="text-sm font-semibold tracking-wide text-left text-gray-900 bg-gray-100 uppercase border-b border-gray-600">
-                    <th className="px-4 py-3">S/N</th>
-                    <th className="px-4 py-3">Item</th>
-                    <th className="px-4 py-3">Central</th>
-                    <th className="px-4 py-3">East</th>
-                    <th className="px-4 py-3">North</th>
-                    <th className="px-4 py-3">West</th>
-                    <th className="px-4 py-3">South</th>
-                    <th className="px-4 py-3">Total</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white">
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      1
-                    </td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      No. of Target operations
-                    </td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      {" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      {" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                  </tr>
-                  <tr className="text-gray-700">
-                    <td
-                      className="px-4 py-3 text-sm font-extrabold border"
-                      colSpan="8"
-                    >
-                      <center>Serious injuries</center>{" "}
-                    </td>
-                  </tr>
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      01{" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      Suspected to be thieves
-                    </td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      {" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      {" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                  </tr>
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      02{" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      Wanted by RIB
-                    </td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      {" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      {" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                  </tr>
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      03{" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      Loiterers
-                    </td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      {" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      {" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                  </tr>
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      04{" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      Street hawkers{" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      {" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      {" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                  </tr>
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      05{" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      Drug consumer{" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      {" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      {" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                  </tr>
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      06{" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      Vagabonds{" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      {" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      {" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                  </tr>
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      {" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      <b>Total</b>{" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      {" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      {" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="pt-8">
-        <div className="overflow-x-auto relative shadow-md sm:rounded-lg">
-          <div className="overflow-x-auto relative shadow-md sm:rounded-lg">
-            <h2 className="py-3">
-              <b> 5.Quantity of seized drugs </b>
-            </h2>
-            <div className="w-full overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="text-sm font-semibold tracking-wide text-left text-gray-900 bg-gray-100 uppercase border-b border-gray-600">
-                    <th className="px-4 py-3">Items</th>
-                    <th className="px-4 py-3">Unit</th>
-                    <th className="px-4 py-3">Central</th>
-                    <th className="px-4 py-3">East</th>
-                    <th className="px-4 py-3">North</th>
-                    <th className="px-4 py-3">West</th>
-                    <th className="px-4 py-3">South</th>
-                    <th className="px-4 py-3">Total</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white">
-                  <tr className="text-gray-700">
-                    <td
-                      className="px-4 py-3 text-xs font-semibold border"
-                      rowSpan="2"
-                    >
-                      Cannabis
-                    </td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      Kg{" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      {" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                  </tr>
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      Pellets{" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                  </tr>
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      Cocaine{" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      Grams{" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      {" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                  </tr>
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      Kanyanga{" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      Liters{" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                  </tr>
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      Illicit brew{" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      liters{" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      {" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="pt-8">
-        <div className="overflow-x-auto relative shadow-md sm:rounded-lg">
-          <div className="overflow-x-auto relative shadow-md sm:rounded-lg">
-            <h2 className="py-3">
-              <b> 6. Quantity of seized smuggled goods </b>
-            </h2>
-            <div className="w-full overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="text-sm font-semibold tracking-wide text-left text-gray-900 bg-gray-100 uppercase border-b border-gray-600">
-                    <th className="px-4 py-3">Items</th>
-                    <th className="px-4 py-3">Unit</th>
-                    <th className="px-4 py-3">East</th>
-                    <th className="px-4 py-3">North</th>
-                    <th className="px-4 py-3">West</th>
-                    <th className="px-4 py-3">South</th>
-                    <th className="px-4 py-3">Total</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white">
-                  <tr className="text-gray-700">
-                    <td
-                      className="px-4 py-3 text-xs font-semibold border"
-                      rowSpan="2"
-                    >
-                      Drinks{" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      Soft (Pcs){" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                  </tr>
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs border">Hard (pcs) </td>
-                    <td className="px-4 py-3 text-xs border"> </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"> </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                  </tr>
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs  border" rowSpan="3">
-                      Clothes{" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs  border">Bales </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs  border"></td>
-                    <td className="px-4 py-3 text-xs  border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                  </tr>
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs  border">Kg </td>
-                    <td className="px-4 py-3 text-xs  border"> </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs  border"></td>
-                    <td className="px-4 py-3 text-xs  border"> </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                  </tr>
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs border">Pcs </td>
-                    <td className="px-4 py-3 text-xs border"> </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="pt-8">
-        <div className="overflow-x-auto relative shadow-md sm:rounded-lg">
-          <div className="overflow-x-auto relative shadow-md sm:rounded-lg">
-            <h2 className="py-3">
-              <b> 7. Vandalism </b>
-            </h2>
-            <div className="w-full overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="text-sm font-semibold tracking-wide text-left text-gray-900 bg-gray-100 uppercase border-b border-gray-600">
-                    <th className="px-4 py-3">District</th>
-                    <th className="px-4 py-3">Stolen cable (m)</th>
-                    <th className="px-4 py-3">Affected h.</th>
-                    <th className="px-4 py-3">Recovered</th>
-                    <th className="px-4 py-3">Arrested Suspects</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white">
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      Nyaruguru{" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                  </tr>
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs border">Nyagatare </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"> </td>
-                  </tr>
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs  border">Nyamagabe </td>
-                    <td className="px-4 py-3 text-xs  border"> </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs  border"></td>
-                    <td className="px-4 py-3 text-xs  border"> </td>
-                  </tr>
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs  border">Nyamasheke </td>
-                    <td className="px-4 py-3 text-xs  border"> </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs  border"></td>
-                    <td className="px-4 py-3 text-xs  border"> </td>
-                  </tr>
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs border">Burera </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"> </td>
-                  </tr>
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs border">
-                      <b>Total</b>{" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs border"> </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"> </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="pt-8">
-        <div className="overflow-x-auto relative shadow-md sm:rounded-lg">
-          <div className="overflow-x-auto relative shadow-md sm:rounded-lg">
-            <h2 className="py-3">
-              <b> 8. Damages caused by natural disaster. </b>
-            </h2>
-            <div className="w-full overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="text-sm font-semibold tracking-wide text-left text-gray-900 bg-gray-100 uppercase border-b border-gray-600">
-                    <th className="px-4 py-3">Province</th>
-                    <th className="px-4 py-3"> House</th>
-                    <th className="px-4 py-3">Crops (Ha)</th>
-                    <th className="px-4 py-3">Classroom</th>
-                    <th className="px-4 py-3">Death</th>
-                    <th className="px-4 py-3">Road </th>
-                    <th className="px-4 py-3">Injury</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white">
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs font-semibold border">
-                      East{" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                  </tr>
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs border">Central </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                  </tr>
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs  border">North </td>
-                    <td className="px-4 py-3 text-xs  border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs  border"></td>
-                    <td className="px-4 py-3 text-xs  border"> </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                  </tr>
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs  border">South </td>
-                    <td className="px-4 py-3 text-xs  border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs  border"></td>
-                    <td className="px-4 py-3 text-xs  border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                  </tr>
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs border">West </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"> </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                  </tr>
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3 text-xs border">
-                      <b>Total</b>{" "}
-                    </td>
-                    <td className="px-4 py-3 text-xs border"> </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs border"> </td>
-                    <td className="px-4 py-3 text-xs border"></td>
-                    <td className="px-4 py-3 text-xs font-semibold border"></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
           </div>
         </div>
       </div>
@@ -740,4 +165,4 @@ function IncidentTable() {
   );
 }
 
-export default IncidentTable;
+export default IncidentsTable;

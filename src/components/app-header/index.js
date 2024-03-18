@@ -1,15 +1,15 @@
-import React, { useState } from "react";
-import DatePicker from "react-datepicker";
+// import { useState } from "react";
+// import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "jspdf-autotable";
 import imag1 from "../../RNP_LOGO.png";
 
 function AppHeader() {
-  const [selectedDate, setSelectedDate] = useState(null);
+  // const [selectedDate, setSelectedDate] = useState(null);
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
+  // const handleDateChange = (date) => {
+  //   setSelectedDate(date);
+  // };
   return (
     <header className="bg-gray-300">
       <nav
@@ -20,7 +20,7 @@ function AppHeader() {
           <img src={imag1} alt="/" className="w-12 h-12" />
         </div>
         <div className="flex lg:gap-x-12">
-          <DatePicker
+          {/* <DatePicker
             selected={selectedDate}
             className="p-1 rounded-half border-blue-900"
             onChange={handleDateChange}
@@ -35,7 +35,7 @@ function AppHeader() {
             dateFormat="MM/dd/yyyy"
             isClearable
             placeholderText="Select a date"
-          />
+          /> */}
         </div>
       </nav>
     </header>
