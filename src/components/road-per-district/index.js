@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-function IncidentsPerDistrictTable() {
+function RoadsPerDistrictTable() {
   const [tableData, setTableData] = useState({});
   const [sectors, setSectors] = useState([]);
   const [district, setDistrict] = useState("");
@@ -18,7 +18,7 @@ function IncidentsPerDistrictTable() {
   //
   const getData = async () => {
     if (district.length === 0) return;
-    const urlData = `https://gis.police.gov.rw/server/rest/services/Incidents_Data/FeatureServer/4/query?where=district+%3D+%27${district}%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&defaultSR=&spatialRel=esriSpatialRelIntersects&distance=&units=esriSRUnit_Foot&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&gdbVersion=&historicMoment=&returnDistinctValues=false&returnIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&orderByFields=&groupByFieldsForStatistics=sector%2C+incident_type_l3&outStatistics=%5B%7B%0D%0A++%22statisticType%22%3A+%22Count%22%2C%0D%0A++%22onStatisticField%22%3A+%22incident_type_l3%22%2C%0D%0A++%22outStatisticFieldName%22%3A+%22total%22%0D%0A%7D%5D&returnZ=false&returnM=false&multipatchOption=xyFootprint&resultOffset=&resultRecordCount=&returnTrueCurves=false&returnExceededLimitFeatures=false&quantizationParameters=&returnCentroid=false&timeReferenceUnknownClient=false&maxRecordCountFactor=&sqlFormat=none&resultType=&featureEncoding=esriDefault&datumTransformation=&f=json&token=DMIJMTS5yGqTbjiaXky-5k2Bby9bNOEO85JSUkbLMp2qO0c5MbHaTl_Z2zxiwHY3beQqQ44IWcFqd0Nq1tEbctQDlsHVrTMWrzoKpOUSBqOKhk4IFywwxe_aIt9KHO1aEUMGI4PBv4KIH_52XyhLtYlJPyv5UBQpa__eSbp4TLE.`;
+    const urlData = `https://gis.police.gov.rw/server/rest/services/Road_Accidents_Data/FeatureServer/0/query?where=district+%3D+%27${district}%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&defaultSR=&spatialRel=esriSpatialRelIntersects&distance=&units=esriSRUnit_Foot&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&gdbVersion=&historicMoment=&returnDistinctValues=false&returnIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&orderByFields=&groupByFieldsForStatistics=probable_cause%2C+sector&outStatistics=%5B%7B%0D%0A++%22statisticType%22%3A+%22Count%22%2C%0D%0A++%22onStatisticField%22%3A+%22probable_cause%22%2C%0D%0A++%22outStatisticFieldName%22%3A+%22total%22%0D%0A%7D%5D&returnZ=false&returnM=false&multipatchOption=xyFootprint&resultOffset=&resultRecordCount=&returnTrueCurves=false&returnExceededLimitFeatures=false&quantizationParameters=&returnCentroid=false&timeReferenceUnknownClient=false&maxRecordCountFactor=&sqlFormat=none&resultType=&featureEncoding=esriDefault&datumTransformation=&f=json&token=DMIJMTS5yGqTbjiaXky-5k2Bby9bNOEO85JSUkbLMp2qO0c5MbHaTl_Z2zxiwHY3beQqQ44IWcFqd0Nq1tEbctQDlsHVrTMWrzoKpOUSBqOKhk4IFywwxe_aIt9KHO1aEUMGI4PBv4KIH_52XyhLtYlJPyv5UBQpa__eSbp4TLE.`;
     const resultTable = {};
     const sectorsList = [];
     try {
@@ -26,12 +26,11 @@ function IncidentsPerDistrictTable() {
       const allData = await returnProvinceData(urlData);
       for (let i = 0; i < allData.length; i++) {
         const data = allData[i];
-        if (resultTable[data.attributes.incident_type_l3]) {
-          resultTable[data.attributes.incident_type_l3][
-            data.attributes.sector
-          ] = data.attributes.total;
+        if (resultTable[data.attributes.probable_cause]) {
+          resultTable[data.attributes.probable_cause][data.attributes.sector] =
+            data.attributes.total;
         } else {
-          resultTable[data.attributes.incident_type_l3] = {
+          resultTable[data.attributes.probable_cause] = {
             [data.attributes.sector]: data.attributes.total,
           };
         }
@@ -81,7 +80,7 @@ function IncidentsPerDistrictTable() {
         <div className="overflow-x-auto relative shadow-md sm:rounded-lg">
           <div className="flex items-center justify-between gap-4">
             <h2 className="py-3">
-              <b>1. Prevalent Incidents</b>
+              <b>1. Prevalent Roads</b>
             </h2>
             <select
               value={district}
@@ -160,4 +159,4 @@ function IncidentsPerDistrictTable() {
   );
 }
 
-export default IncidentsPerDistrictTable;
+export default RoadsPerDistrictTable;

@@ -55,7 +55,7 @@ function IncidentsTable() {
       <div className="overflow-x-auto relative shadow-md sm:rounded-lg">
         <div className="overflow-x-auto relative shadow-md sm:rounded-lg">
           <h2 className="py-3">
-            <b>1. Prevalent Crimes</b>
+            <b>1. Prevalent Incidents</b>
           </h2>
           <div className="w-full overflow-x-auto">
             <table className="w-full table1">
@@ -81,19 +81,19 @@ function IncidentsTable() {
                       {crime}
                     </td>
                     <td className="px-4 py-3 text-xs font-semibold border">
-                      {tableData[crime]?.kigali}
+                      {tableData[crime]?.kigali || "0"}
                     </td>
                     <td className="px-4 py-3 text-xs border">
-                      {tableData[crime]?.east}
+                      {tableData[crime]?.east || "0"}
                     </td>
                     <td className="px-4 py-3 text-xs font-semibold border">
-                      {tableData[crime]?.north}
+                      {tableData[crime]?.north || "0"}
                     </td>
                     <td className="px-4 py-3 text-xs font-semibold border">
-                      {tableData[crime]?.south}
+                      {tableData[crime]?.south || "0"}
                     </td>
                     <td className="px-4 py-3 text-xs border">
-                      {tableData[crime]?.west}
+                      {tableData[crime]?.west || "0"}
                     </td>
                     <td className="px-4 py-3 text-xs border">
                       {Number(tableData[crime].kigali || 0) +

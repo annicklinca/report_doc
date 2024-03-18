@@ -14,84 +14,27 @@ function CrimesTable() {
     }
   };
 
-  const east = `https://gis.police.gov.rw/server/rest/services/Country_Crimes_Data/FeatureServer/0/query?where=province+%3D+%27East%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&defaultSR=&spatialRel=esriSpatialRelIntersects&distance=&units=esriSRUnit_Foot&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&gdbVersion=&historicMoment=&returnDistinctValues=false&returnIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&orderByFields=&groupByFieldsForStatistics=crime_type_l3%2C+province&outStatistics=%5B%7B%0D%0A++%22statisticType%22%3A+%22Count%22%2C%0D%0A++%22onStatisticField%22%3A+%22crime_type_l3%22%2C%0D%0A++%22outStatisticFieldName%22%3A+%22total%22%0D%0A%7D%5D&returnZ=false&returnM=false&multipatchOption=xyFootprint&resultOffset=&resultRecordCount=&returnTrueCurves=false&returnExceededLimitFeatures=false&quantizationParameters=&returnCentroid=false&timeReferenceUnknownClient=false&maxRecordCountFactor=&sqlFormat=none&resultType=&featureEncoding=esriDefault&datumTransformation=&f=json&token=DMIJMTS5yGqTbjiaXky-5k2Bby9bNOEO85JSUkbLMp2qO0c5MbHaTl_Z2zxiwHY3beQqQ44IWcFqd0Nq1tEbctQDlsHVrTMWrzoKpOUSBqOKhk4IFywwxe_aIt9KHO1aEUMGI4PBv4KIH_52XyhLtYlJPyv5UBQpa__eSbp4TLE.`;
-  const north = `https://gis.police.gov.rw/server/rest/services/Country_Crimes_Data/FeatureServer/0/query?where=province+%3D+%27North%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&defaultSR=&spatialRel=esriSpatialRelIntersects&distance=&units=esriSRUnit_Foot&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&gdbVersion=&historicMoment=&returnDistinctValues=false&returnIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&orderByFields=&groupByFieldsForStatistics=crime_type_l3%2C+province&outStatistics=%5B%7B%0D%0A++%22statisticType%22%3A+%22Count%22%2C%0D%0A++%22onStatisticField%22%3A+%22crime_type_l3%22%2C%0D%0A++%22outStatisticFieldName%22%3A+%22total%22%0D%0A%7D%5D&returnZ=false&returnM=false&multipatchOption=xyFootprint&resultOffset=&resultRecordCount=&returnTrueCurves=false&returnExceededLimitFeatures=false&quantizationParameters=&returnCentroid=false&timeReferenceUnknownClient=false&maxRecordCountFactor=&sqlFormat=none&resultType=&featureEncoding=esriDefault&datumTransformation=&f=json&token=DMIJMTS5yGqTbjiaXky-5k2Bby9bNOEO85JSUkbLMp2qO0c5MbHaTl_Z2zxiwHY3beQqQ44IWcFqd0Nq1tEbctQDlsHVrTMWrzoKpOUSBqOKhk4IFywwxe_aIt9KHO1aEUMGI4PBv4KIH_52XyhLtYlJPyv5UBQpa__eSbp4TLE.`;
-  const west = `https://gis.police.gov.rw/server/rest/services/Country_Crimes_Data/FeatureServer/0/query?where=province+%3D+%27West%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&defaultSR=&spatialRel=esriSpatialRelIntersects&distance=&units=esriSRUnit_Foot&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&gdbVersion=&historicMoment=&returnDistinctValues=false&returnIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&orderByFields=&groupByFieldsForStatistics=crime_type_l3%2C+province&outStatistics=%5B%7B%0D%0A++%22statisticType%22%3A+%22Count%22%2C%0D%0A++%22onStatisticField%22%3A+%22crime_type_l3%22%2C%0D%0A++%22outStatisticFieldName%22%3A+%22total%22%0D%0A%7D%5D&returnZ=false&returnM=false&multipatchOption=xyFootprint&resultOffset=&resultRecordCount=&returnTrueCurves=false&returnExceededLimitFeatures=false&quantizationParameters=&returnCentroid=false&timeReferenceUnknownClient=false&maxRecordCountFactor=&sqlFormat=none&resultType=&featureEncoding=esriDefault&datumTransformation=&f=json&token=DMIJMTS5yGqTbjiaXky-5k2Bby9bNOEO85JSUkbLMp2qO0c5MbHaTl_Z2zxiwHY3beQqQ44IWcFqd0Nq1tEbctQDlsHVrTMWrzoKpOUSBqOKhk4IFywwxe_aIt9KHO1aEUMGI4PBv4KIH_52XyhLtYlJPyv5UBQpa__eSbp4TLE.`;
-  const south = `https://gis.police.gov.rw/server/rest/services/Country_Crimes_Data/FeatureServer/0/query?where=province+%3D+%27South%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&defaultSR=&spatialRel=esriSpatialRelIntersects&distance=&units=esriSRUnit_Foot&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&gdbVersion=&historicMoment=&returnDistinctValues=false&returnIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&orderByFields=&groupByFieldsForStatistics=crime_type_l3%2C+province&outStatistics=%5B%7B%0D%0A++%22statisticType%22%3A+%22Count%22%2C%0D%0A++%22onStatisticField%22%3A+%22crime_type_l3%22%2C%0D%0A++%22outStatisticFieldName%22%3A+%22total%22%0D%0A%7D%5D&returnZ=false&returnM=false&multipatchOption=xyFootprint&resultOffset=&resultRecordCount=&returnTrueCurves=false&returnExceededLimitFeatures=false&quantizationParameters=&returnCentroid=false&timeReferenceUnknownClient=false&maxRecordCountFactor=&sqlFormat=none&resultType=&featureEncoding=esriDefault&datumTransformation=&f=json&token=DMIJMTS5yGqTbjiaXky-5k2Bby9bNOEO85JSUkbLMp2qO0c5MbHaTl_Z2zxiwHY3beQqQ44IWcFqd0Nq1tEbctQDlsHVrTMWrzoKpOUSBqOKhk4IFywwxe_aIt9KHO1aEUMGI4PBv4KIH_52XyhLtYlJPyv5UBQpa__eSbp4TLE.`;
-  const kigali = `https://gis.police.gov.rw/server/rest/services/Country_Crimes_Data/FeatureServer/0/query?where=province+%3D+%27Kigali%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&defaultSR=&spatialRel=esriSpatialRelIntersects&distance=&units=esriSRUnit_Foot&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&gdbVersion=&historicMoment=&returnDistinctValues=false&returnIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&orderByFields=&groupByFieldsForStatistics=crime_type_l3%2C+province&outStatistics=%5B%7B%0D%0A++%22statisticType%22%3A+%22Count%22%2C%0D%0A++%22onStatisticField%22%3A+%22crime_type_l3%22%2C%0D%0A++%22outStatisticFieldName%22%3A+%22total%22%0D%0A%7D%5D&returnZ=false&returnM=false&multipatchOption=xyFootprint&resultOffset=&resultRecordCount=&returnTrueCurves=false&returnExceededLimitFeatures=false&quantizationParameters=&returnCentroid=false&timeReferenceUnknownClient=false&maxRecordCountFactor=&sqlFormat=none&resultType=&featureEncoding=esriDefault&datumTransformation=&f=json&token=DMIJMTS5yGqTbjiaXky-5k2Bby9bNOEO85JSUkbLMp2qO0c5MbHaTl_Z2zxiwHY3beQqQ44IWcFqd0Nq1tEbctQDlsHVrTMWrzoKpOUSBqOKhk4IFywwxe_aIt9KHO1aEUMGI4PBv4KIH_52XyhLtYlJPyv5UBQpa__eSbp4TLE.`;
-
+  const urlData = `https://gis.police.gov.rw/server/rest/services/Country_Crimes_Data/FeatureServer/0/query?where=1%3D1&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&defaultSR=&spatialRel=esriSpatialRelIntersects&distance=&units=esriSRUnit_Foot&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&gdbVersion=&historicMoment=&returnDistinctValues=false&returnIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&orderByFields=&groupByFieldsForStatistics=crime_type_l3%2C+province&outStatistics=%5B%7B%0D%0A++%22statisticType%22%3A+%22Count%22%2C%0D%0A++%22onStatisticField%22%3A+%22crime_type_l3%22%2C%0D%0A++%22outStatisticFieldName%22%3A+%22total%22%0D%0A%7D%5D&returnZ=false&returnM=false&multipatchOption=xyFootprint&resultOffset=&resultRecordCount=&returnTrueCurves=false&returnExceededLimitFeatures=false&quantizationParameters=&returnCentroid=false&timeReferenceUnknownClient=false&maxRecordCountFactor=&sqlFormat=none&resultType=&featureEncoding=esriDefault&datumTransformation=&f=json&token=DMIJMTS5yGqTbjiaXky-5k2Bby9bNOEO85JSUkbLMp2qO0c5MbHaTl_Z2zxiwHY3beQqQ44IWcFqd0Nq1tEbctQDlsHVrTMWrzoKpOUSBqOKhk4IFywwxe_aIt9KHO1aEUMGI4PBv4KIH_52XyhLtYlJPyv5UBQpa__eSbp4TLE.`;
   //
   const getData = async () => {
     const resultTable = {};
     try {
       //east data
-      const eastData = await returnProvinceData(east);
-      for (let i = 0; i < eastData.length; i++) {
-        const data = eastData[i];
+      const allData = await returnProvinceData(urlData);
+      for (let i = 0; i < allData.length; i++) {
+        const data = allData[i];
         if (resultTable[data.attributes.crime_type_l3]) {
-          resultTable[data.attributes.crime_type_l3].east =
-            data.attributes.total;
+          resultTable[data.attributes.crime_type_l3][
+            data.attributes.province.toLowerCase()
+          ] = data.attributes.total;
         } else {
           resultTable[data.attributes.crime_type_l3] = {
-            east: data.attributes.total,
-          };
-        }
-      }
-      //west data
-      const westData = await returnProvinceData(west);
-      for (let i = 0; i < westData.length; i++) {
-        const data = westData[i];
-        if (resultTable[data.attributes.crime_type_l3]) {
-          resultTable[data.attributes.crime_type_l3].west =
-            data.attributes.total;
-        } else {
-          resultTable[data.attributes.crime_type_l3] = {
-            west: data.attributes.total,
-          };
-        }
-      }
-      //north data
-      const northData = await returnProvinceData(north);
-      for (let i = 0; i < northData.length; i++) {
-        const data = northData[i];
-        if (resultTable[data.attributes.crime_type_l3]) {
-          resultTable[data.attributes.crime_type_l3].north =
-            data.attributes.total;
-        } else {
-          resultTable[data.attributes.crime_type_l3] = {
-            north: data.attributes.total,
-          };
-        }
-      }
-      //south data
-      const southData = await returnProvinceData(south);
-      for (let i = 0; i < southData.length; i++) {
-        const data = southData[i];
-        if (resultTable[data.attributes.crime_type_l3]) {
-          resultTable[data.attributes.crime_type_l3].south =
-            data.attributes.total;
-        } else {
-          resultTable[data.attributes.crime_type_l3] = {
-            south: data.attributes.total,
-          };
-        }
-      }
-      //central data
-      const kigaliData = await returnProvinceData(kigali);
-      for (let i = 0; i < kigaliData.length; i++) {
-        const data = kigaliData[i];
-        if (resultTable[data.attributes.crime_type_l3]) {
-          resultTable[data.attributes.crime_type_l3].kigali =
-            data.attributes.total;
-        } else {
-          resultTable[data.attributes.crime_type_l3] = {
-            kigali: data.attributes.total,
+            [data.attributes.province.toLowerCase()]: data.attributes.total,
           };
         }
       }
       //
       setTableData(resultTable);
-      console.log({ resultTable });
     } catch (error) {
       console.log({ error });
     }
@@ -192,19 +135,19 @@ function CrimesTable() {
                       {crime}
                     </td>
                     <td className="px-4 py-3 text-xs font-semibold border">
-                      {tableData[crime]?.kigali}
+                      {tableData[crime]?.kigali || "0"}
                     </td>
                     <td className="px-4 py-3 text-xs border">
-                      {tableData[crime]?.east}
+                      {tableData[crime]?.east || "0"}
                     </td>
                     <td className="px-4 py-3 text-xs font-semibold border">
-                      {tableData[crime]?.north}
+                      {tableData[crime]?.north || "0"}
                     </td>
                     <td className="px-4 py-3 text-xs font-semibold border">
-                      {tableData[crime]?.south}
+                      {tableData[crime]?.south || "0"}
                     </td>
                     <td className="px-4 py-3 text-xs border">
-                      {tableData[crime]?.west}
+                      {tableData[crime]?.west || "0"}
                     </td>
                     <td className="px-4 py-3 text-xs border">
                       {Number(tableData[crime].kigali || 0) +

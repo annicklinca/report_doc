@@ -6,6 +6,8 @@ import IncidentsPerDistrictTable from "./components/incident-per-district";
 import IncidentTable from "./components/incident-table";
 import RoadTable from "./components/road-table";
 import axios from "axios";
+import CrimesPerDistrictTable from "./components/crime-per-district";
+import RoadsPerDistrictTable from "./components/road-per-district";
 
 const AppContents = () => {
   return (
@@ -13,7 +15,9 @@ const AppContents = () => {
       <h1 className="text-bold text-center my-8">
         <b>REPORT</b>
       </h1>
+      <CrimesPerDistrictTable />
       <IncidentsPerDistrictTable />
+      <RoadsPerDistrictTable />
       <CrimesTable />
       <IncidentTable />
       <RoadTable />
