@@ -85,7 +85,7 @@ function App() {
             className="bg-blue-600 text-white px-3 py-1 rounded-md"
             onClick={() => window.print()}
           >
-            Print
+            Print PDF document
           </button>
         </div>
         <div ref={contentsRef}>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-function CrimesPerDistrictTable() {
+function IncidentsPerDistrictTable() {
   const [tableData, setTableData] = useState({});
   const [sectors, setSectors] = useState([]);
   const [district, setDistrict] = useState("");
@@ -80,7 +80,7 @@ function CrimesPerDistrictTable() {
         <div className="overflow-x-auto relative shadow-md sm:rounded-lg">
           <div className="flex items-center justify-between gap-4">
             <h2 className="py-3">
-              <b>1. Prevalent Crimes</b>
+              <b>1. Prevalent Incidents /Districts</b>
             </h2>
             <select
               value={district}
@@ -159,4 +159,4 @@ function CrimesPerDistrictTable() {
   );
 }
 
-export default CrimesPerDistrictTable;
+export default IncidentsPerDistrictTable;
